@@ -8,3 +8,6 @@ li {
   user-select: none;
   margin: 1rem;
 }
+.card {
+  margin-top: 2rem;
+}
