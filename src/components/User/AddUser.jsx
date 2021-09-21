@@ -1,42 +1,36 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../UI/Button";
 import Card from "../UI/Card/Card";
 import ErrorText from "./ErrorText";
 import styles from "./user.module.css";
 
 function AddUser(props) {
-  const [username, setUsername] = useState("");
-  const [userAge, setUserAge] = useState("");
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
   const [errorShow, setErrorShow] = useState(true);
   const [errorText, setErrorText] = useState("");
   const [userErrorText, setUserErrorText] = useState("");
 
   const addUserHandler = (e) => {
+    const enteredName = nameInputRef.current.value;
+    const enteredAge = ageInputRef.current.value;
     e.preventDefault();
-    if (username.trim().length === 5 || userAge.trim().length === 0) {
+    if (enteredName.trim().length === 5 || enteredAge.trim().length === 0) {
       setUserErrorText("Username must be 5 chars long");
       setErrorText("Age must be profided");
       return;
     }
-    if (+userAge < 7) {
+    if (+enteredAge < 7) {
       setErrorText("Age must be over 7 years old");
       return;
     }
     setErrorText("");
     setUserErrorText("");
-    props.onAddUser(username, userAge);
-    setUsername("");
-    setUserAge("");
+    props.onAddUser(enteredName, enteredAge);
+    nameInputRef.current.value = "";
+    ageInputRef.current.value = "";
   };
-  const usernameChangeHanlder = (e) => {
-    setUsername(e.target.value);
 
-    setUserErrorText("");
-  };
-  const usernameAgeHandler = (e) => {
-    setUserAge(e.target.value);
-    setErrorText("");
-  };
   return (
     <Card>
       <div className={styles["new-user"]}>
@@ -48,8 +42,7 @@ function AddUser(props) {
               id="username"
               autoComplete={"off"}
               placeholder="username"
-              value={username}
-              onChange={usernameChangeHanlder}
+              ref={nameInputRef}
             />
             {errorShow && <ErrorText text={userErrorText} color="red" />}
           </div>
@@ -60,8 +53,7 @@ function AddUser(props) {
               id="age"
               autoComplete={"off"}
               placeholder="Age"
-              value={userAge}
-              onChange={usernameAgeHandler}
+              ref={ageInputRef}
             />
             {errorShow && <ErrorText text={errorText} color="red" />}
           </div>
